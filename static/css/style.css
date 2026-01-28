@@ -1,0 +1,36 @@
+/* font face is used fo rcreating custom font file and telling my website to use it*/
+@font-face {
+    font-family: "MyFont";
+    src: url("../fonts/st_font.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, body{
+    height: 100%;
+    margin: 0;
+    padding: 0%;
+}
+
+body{
+    font-family: "MyFont", sans-serif;
+}
+
+.page-bg{   
+    background-image: var(--bg-image);
+    background-size: cover;        /* Make the image cover the whole area */
+    background-position: center;   /* Center the image */
+    min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    
+}
+
+.bg-dynamic {
+  background-image: var(--bg-image);
+}
+
+

@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% set bg_image = url_for('static', filename='images/room.png') %}
+
+{% block title %}
+    Stranger Things
+{% endblock %}
+
+{% block main %}
+    <div action = "/call_friends"  class="home flex flex-col items-center text-center gap-4">
+        <p id="line1" class="typing-text text-lg opacity-90" data-text="Your friends think you're joking and head home safely."></p>
+        <p id="line2" class="typing-text text-lg opacity-90" data-text="You return inside and realize you're alone."></p>
+
+        <form id="action-form" method = "post" class = "flex flex-col gap-3 mt-4 opacity-0 transition-opacity duration-1000">  
+            <button name = "continue" value = "continue" class = "{{ button_class }}">CONTINUE</button>
+        </form>
+    </div>
+
+    <script>
+        async function type(elementId, speed = 40){
+            const element = document.getElementById(elementId);
+            const text = element.getAttribute('data-text');
+            for(let i = 0; i < text.length; i++)
+            {
+            element.innerHTML += text.charAt(i);
+            await new Promise(resolve => setTimeout(resolve, speed));
+            }
+        }
+        async function run() {
+            await type('line1');
+            await type('line2');
+
+            document.getElementById('action-form').classList.remove('opacity-0');
+        }
+
+        document.addEventListener('DOMContentLoaded',run);
+    </script>
+{% endblock %}

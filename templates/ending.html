@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Stranger Things
+{% endblock %}
+
+{% block main %}
+<div class="home flex flex-col items-center text-center gap-4">
+
+    <p id="line1" class="typing-text text-lg opacity-90"
+       data-text="Final Battle Begins..."></p>
+
+    {% if ending == "best" %}
+        <p id="line2" class="typing-text" data-text="With Eleven by your side, you feel a surge of confidence."></p>
+        <p id="line3" class="typing-text" data-text="Together, you confront the Demogorgon head-on."></p>
+        <p id="line4" class="typing-text" data-text="After an intense battle, Hawkins is saved."></p>
+        <p id="line5" class="typing-text text-2xl font-semibold mt-6"
+           data-text="CONGRATULATIONS! YOU WIN 🏆"></p>
+
+    {% elif ending == "neutral" %}
+        <p id="line2" class="typing-text" data-text="Without Eleven, the Demogorgon overpowers you."></p>
+        <p id="line3" class="typing-text" data-text="You survive… but at a terrible cost."></p>
+        <p id="line4" class="typing-text text-2xl font-semibold mt-6"
+           data-text="Hawkins will never be the same."></p>
+
+    {% else %}
+        <p id="line2" class="typing-text" data-text="Alone, you face the Demogorgon."></p>
+        <p id="line3" class="typing-text" data-text="You fought bravely, but it wasn't enough."></p>
+        <p id="line4" class="typing-text text-2xl font-semibold mt-6"
+           data-text="GAME OVER ☠️"></p>
+    {% endif %}
+
+    <a href="/restart" class="{{ button_class }} mt-6">Play Again</a>
+
+</div>
+
+<script>
+async function type(elementId, speed = 40) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    const text = element.getAttribute('data-text');
+    for (let i = 0; i < text.length; i++) {
+        element.innerHTML += text.charAt(i);
+        await new Promise(resolve => setTimeout(resolve, speed));
+    }
+}
+
+async function run() {
+    await type('line1');
+    await type('line2');
+    await type('line3');
+    await type('line4');
+    await type('line5', 60);
+}
+
+document.addEventListener('DOMContentLoaded', run);
+</script>
+{% endblock %}

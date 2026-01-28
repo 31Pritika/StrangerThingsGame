@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% set bg_image = url_for('static', filename='images/dddd.png') %}
+{% block title %}
+    Stranger Things: HOME
+{% endblock %}
+
+{% block main %}
+<div class="home flex flex-col items-center text-center gap-4">
+    <h1 class="text-5xl font-bold mb-4">Welcome to STRANGER THINGS</h1>
+    
+    <div class="space-y-2 min-h-[150px]"> <!-- Set a min-height to prevent layout jump -->
+        <p id="line1" class="typing-text text-lg opacity-90" data-text="You are Mike Wheeler, playing Dungeons & Dragons with your friends in the basement."></p>
+        <p id="line2" class="typing-text text-lg opacity-90" data-text="After the game, your friends head home."></p>
+        <p id="line3" class="typing-text text-lg opacity-90" data-text="Suddenly, the lights flicker."></p>
+        
+        <p id="line4" class="typing-text text-2xl font-semibold mt-6" data-text="What do you do?"></p>
+    </div>
+
+    <form id="action-form" action="/" method="post" class="flex flex-col gap-3 mt-4 opacity-0 transition-opacity duration-1000">
+    <button class="{{ button_class }}" name="choice" value="one">
+        Ignore it and go to your room.
+    </button>
+
+    <button class="{{ button_class }}" name="choice" value="two">
+        Go outside to investigate.
+    </button>
+
+    <button class="{{ button_class }}" name="choice" value="three">
+        Call your friends using the walkie-talkie.
+    </button>
+</form>
+</div>
+
+<script>
+    async function type(elementId, speed = 40){
+        const element = document.getElementById(elementId);
+        const text = element.getAttribute('data-text');
+        for(let i = 0; i < text.length; i++)
+        {
+        element.innerHTML += text.charAt(i);
+        await new Promise(resolve => setTimeout(resolve, speed));
+        }
+    }
+    async function run() {
+        await type('line1');
+        await type('line2');
+        await type('line3');
+        await type('line4', 60);
+
+        document.getElementById('action-form').classList.remove('opacity-0');
+    }
+
+    document.addEventListener('DOMContentLoaded',run);
+</script>
+
+
+{% endblock %}
+

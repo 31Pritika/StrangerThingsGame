@@ -1,0 +1,3 @@
+so this is basically a decision based game
+a player will choose an option and based on teh optionthe game will change
+its sort of like a tree

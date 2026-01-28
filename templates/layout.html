@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{% set button_class = "btn bg-gray-900/50 hover:bg-gray-800 text-amber-400 hover:text-amber-300 border-amber-500 hover:border-amber-400 btn-lg" %}
+
+<html lang="en" data-theme="night">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <title>Stranger Things</title>
+</head>
+
+<body class="min-h-screen w-full overflow-hidden text-gray-200 antialiased flex flex-col">
+
+    {# ==========================================================
+       BACKGROUND IMAGE LAYER
+       FIXES:
+       1. Use background-image directly (not unused CSS variable)
+       2. Provide fallback image if bg_image not set
+       3. Use z-0 instead of negative z-index
+    ========================================================== #}
+    <div
+        class="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000"
+        style="background-image: url('{{ bg_image if bg_image is defined else url_for('static', filename='images/default.png') }}');">
+    </div>
+
+    {# ==========================================================
+       NAVBAR
+       FIX: relative + z-10 so it stays above background
+    ========================================================== #}
+    <header class="relative z-10 navbar bg-transparent px-8 py-4 shrink-0">
+        <div class="flex-1">
+            <a href="/"
+               class="text-3xl font-black tracking-tighter text-red-700 uppercase
+                      drop-shadow-[0_2px_10px_rgba(255,0,0,0.5)]">
+                Stranger Things
+            </a>
+        </div>
+        <div class="flex-none">
+            <ul class="menu menu-horizontal px-1 font-bold text-amber-500 gap-4">
+                <li><a href="/" class="hover:bg-red-900/20 rounded-lg">Home</a></li>
+                <li><a href="https://www.netflix.com/in/title/80057281" class="hover:bg-red-900/20 rounded-lg">Watch</a></li>
+            </ul>
+        </div>
+    </header>
+
+    {# ==========================================================
+       MAIN CONTENT AREA
+       FIX: relative z-10 so content is above background
+    ========================================================== #}
+    <main class="relative z-10 flex-1 flex flex-col items-center justify-center p-6 text-center">
+        <div class="w-full max-w-4xl animate-fade-in">
+            {% block main %}
+            <!-- Page content loads here -->
+            {% endblock %}
+        </div>
+    </main>
+
+</body>
+</html>

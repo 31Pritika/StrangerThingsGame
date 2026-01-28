@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% set bg_image = url_for('static', filename='images/elaa.png') %}
+
+{% block title %}
+    Stranger Things
+{% endblock %}
+
+{% block main %}
+    <div action = "/meetstrange"  class="home flex flex-col items-center text-center gap-4">
+        <p id="line1" class="typing-text text-lg opacity-90" data-text="You meet a strange girl with telekinetic powers."></p>
+        <p id="line2" class="typing-text text-lg opacity-90" data-text="She seems friendly and offers to help you."></p>
+        <p id="line3" class="typing-text text-2xl font-semibold mt-6" data-text="What do you do?"></p>
+
+        <form id="action-form" method = "post" class = "flex flex-col gap-3 mt-4 opacity-0 transition-opacity duration-1000">  
+            <button class="{{ button_class }}" name = "choice" value = "one">You take her with you</button>
+            <button class="{{ button_class }}" name = "choice" value = "two">Leave her behind.</button>
+        </form>
+    
+    </div>
+
+    <script>
+        async function type(elementId, speed = 40){
+            const element = document.getElementById(elementId);
+            const text = element.getAttribute('data-text');
+            for(let i = 0; i < text.length; i++)
+            {
+            element.innerHTML += text.charAt(i);
+            await new Promise(resolve => setTimeout(resolve, speed));
+            }
+        }
+        async function run() {
+            await type('line1');
+            await type('line2');
+            await type('line3', 60);
+
+            document.getElementById('action-form').classList.remove('opacity-0');
+        }
+
+        document.addEventListener('DOMContentLoaded',run);
+    </script>
+{% endblock %}
