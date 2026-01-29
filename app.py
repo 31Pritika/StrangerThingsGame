@@ -97,9 +97,19 @@ def call_friends():
 @app.route("/scene2", methods=["GET", "POST"])
 def scene2():
     if request.method == "POST":
-        return redirect("/scene_dustin_place")
+        choice = request.form.get("choice")
+        if choice == "one":
+            return redirect("/scene_dustin_place")
+        elif choice == "two":
+            return redirect("/notdustin")
     return render_template("scene2.html", health=session["health"])
 
+# Route for notdustin.html
+@app.route("/notdustin", methods=["GET", "POST"])
+def notdustin():
+    if request.method == "POST":
+        return redirect("/scene_dustin_place")
+    return render_template("notdustin.html", health=session["health"])
 
 @app.route("/scene_dustin_place", methods=["GET", "POST"])
 def scene_dustin_place():
@@ -114,29 +124,42 @@ def scene3():
         return redirect("/meetstrange")
     return render_template("scene3.html", health=session["health"])
 
-
 @app.route("/meetstrange", methods=["GET", "POST"])
 def meetstrange():
-    if request.method == "POST":
-        choice = request.form.get("choice")
-        print(f"DEBUG: meetstrange choice={choice}")
-        if choice == "one":
-            session["allies"]["Eleven"] = True
+    if request.method == "POST": 
+        choice = request.form.get('choice') 
+        if choice == "one": 
+            session["allies"]["Eleven"] = True 
             session.modified = True
             print("DEBUG: Eleven added to allies!")
-        else:
-            print("DEBUG: Eleven NOT added.")
-        return redirect("/scene4")
-
+            return redirect("/eleven") 
+        else: 
+            return redirect("/no_risk") 
     return render_template("meetstrange.html", health=session["health"])
+
+@app.route("/no_risk", methods=["GET", "POST"])
+def no_risk():
+    if request.method == "POST":
+        return redirect("/elcomes")
+    return render_template("no_risk.html", health=session["health"], allies=session["allies"])
+
+@app.route("/eleven", methods=["GET", "POST"])
+def eleven():
+    if request.method == "POST":
+        return redirect("/scene4")
+    return render_template("eleven.html", health=session["health"], allies=session["allies"])
+
+@app.route("/elcomes", methods=["GET", "POST"])
+def elcomes():
+    if request.method == "POST":
+        return redirect("/scene4")
+    return render_template("elcomes.html", health=session["health"], allies=session["allies"])
 
 
 # ===================== FINAL CHOICE =====================
 
 @app.route("/scene4", methods=["GET", "POST"])
 def scene4():
-
-
     if request.method == "POST":
         choice = request.form.get("choice")
         print(f"DEBUG: choice={choice}, Eleven={session['allies']['Eleven']}, health={session['health']}")

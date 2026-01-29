@@ -14,26 +14,7 @@
         <p id="line4" class="typing-text text-lg opacity-90" data-text="Eleven is overwhelmed, and the creature turns its attention to you and your friends."></p>
         <form id="action-form" method="post" class = "flex flex-col gap-3 mt-4 opacity-0 transition-opacity duration-1000">
             <button name="continue" value="continue" class = "{{ button_class }}">CONTINUE</button>
-        </form>
-    </div>
-
-    <script>
-        async function type(elementId, speed = 40){
-            const element = document.getElementById(elementId);
-            const text = element.getAttribute('data-text');
-            for(let i = 0; i < text.length; i++)
-            {
-            element.innerHTML += text.charAt(i);
-            await new Promise(resolve => setTimeout(resolve, speed));
-            }
-        }
-        async function run() {
-            await type('line1');
-            await type('line2');
-            await type('line3');
-            await type('line4');
-
-            document.getElementById('action-form').classList.remove('opacity-0');
+            {# JS moved to layout.html #}
         }
 
         document.addEventListener('DOMContentLoaded',run);

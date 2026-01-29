@@ -15,22 +15,13 @@
 
 <body class="min-h-screen w-full overflow-hidden text-gray-200 antialiased flex flex-col">
 
-    {# ==========================================================
-       BACKGROUND IMAGE LAYER
-       FIXES:
-       1. Use background-image directly (not unused CSS variable)
-       2. Provide fallback image if bg_image not set
-       3. Use z-0 instead of negative z-index
-    ========================================================== #}
-    <div
-        class="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000"
-        style="background-image: url('{{ bg_image if bg_image is defined else url_for('static', filename='images/default.png') }}');">
+    <div class="fixed inset-0 z-0 bg-cover bg-center"
+         style="background-image: url('{{ bg_image }}');">
+    </div>
+    <div id="spotlight-overlay"
+     class="fixed inset-0 z-10 pointer-events-none">
     </div>
 
-    {# ==========================================================
-       NAVBAR
-       FIX: relative + z-10 so it stays above background
-    ========================================================== #}
     <header class="relative z-10 navbar bg-transparent px-8 py-4 shrink-0">
         <div class="flex-1">
             <a href="/"
@@ -54,10 +45,46 @@
     <main class="relative z-10 flex-1 flex flex-col items-center justify-center p-6 text-center">
         <div class="w-full max-w-4xl animate-fade-in">
             {% block main %}
-            <!-- Page content loads here -->
             {% endblock %}
         </div>
     </main>
 
+
+    {% block scripts %}
+    <script>
+    // Spotlight overlay effect
+    document.addEventListener("mousemove", (e) => {
+        const overlay = document.getElementById("spotlight-overlay");
+        if (!overlay) return;
+        overlay.style.setProperty("--x", `${e.clientX}px`);
+        overlay.style.setProperty("--y", `${e.clientY}px`);
+    });
+
+    async function type(elementId, speed = 40) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
+        const text = element.getAttribute('data-text');
+        for (let i = 0; i < text.length; i++) {
+            element.innerHTML += text.charAt(i);
+            await new Promise(resolve => setTimeout(resolve, speed));
+        }
+    }
+
+    async function runTypingAndRevealForm(extraIds = []) {
+        const elements = Array.from(document.querySelectorAll('.typing-text'));
+        for (const el of elements) {
+            await type(el.id, el.classList.contains('text-2xl') ? 60 : 40);
+        }
+        for (const id of extraIds) {
+            await type(id);
+        }
+        const form = document.getElementById('action-form');
+        if (form) form.classList.remove('opacity-0');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => runTypingAndRevealForm());
+    </script>
+    {% endblock %}
 </body>
 </html>
+

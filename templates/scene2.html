@@ -19,25 +19,6 @@
         </form>
     </div>
 
-    <script>
-        async function type(elementId, speed = 40){
-            const element = document.getElementById(elementId);
-            const text = element.getAttribute('data-text');
-            for(let i = 0; i < text.length; i++)
-            {
-            element.innerHTML += text.charAt(i);
-            await new Promise(resolve => setTimeout(resolve, speed));
-            }
-        }
-        async function run() {
-            await type('line1');
-            await type('line2');
-            await type('line3', 60);
-
-            document.getElementById('action-form').classList.remove('opacity-0');
-        }
-
-        document.addEventListener('DOMContentLoaded',run);
-    </script>
+    {# JS moved to layout.html #}
 
 {% endblock %}

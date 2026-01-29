@@ -1,0 +1,164 @@
+from flask import Flask, render_template, redirect, session, request, url_for
+
+app = Flask(__name__)
+app.secret_key = "notsosure"  # Required for sessions
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+
+# ---------------- HELPER FUNCTIONS ----------------
+
+def final_battle(with_eleven):
+    """Apply final battle logic (like CLI scene5)"""
+    health = session["health"]
+    allies = session["allies"]
+
+    if with_eleven and allies.get("Eleven", False) and health > 50:
+        # Best ending
+        session["ending"] = "best"
+    elif with_eleven and health > 20:
+        # Neutral ending
+        session["health"] -= 30
+        session["ending"] = "neutral"
+    else:
+        # Bad ending
+        session["health"] -= 50
+        session["ending"] = "bad"
+
+# ---------------- ROUTES ----------------
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+    # Initialize session
+    if "health" not in session:
+        session["health"] = 100
+        session["allies"] = {"Friends": False, "Eleven": False}
+
+    if request.method == "POST":
+        choice = request.form.get('choice')
+        if choice == "one":
+            session["health"] -= 25
+            return redirect("/room_encounter")
+        elif choice == "two":
+            return redirect("/demo_encounter")
+        else:
+            session["allies"]["Friends"] = True
+            return redirect("/call_friends")
+    else:
+        return render_template(
+            "home.html",
+            health=session["health"],
+            bg_image=url_for('static', filename='images/d&d.jpg')
+        )
+
+# ---------------- SCENE 1 ----------------
+@app.route("/room_encounter", methods=["GET", "POST"])
+def room_encounter():
+    if request.method == "POST":
+        return redirect("/scene2")
+    return render_template("room_encounter.html", health=session["health"])
+
+@app.route("/demo_encounter", methods=["GET", "POST"])
+def demo_encounter():
+    if request.method == "POST":
+        return redirect("/scene2")
+    return render_template("demo_encounter.html", health=session["health"])
+
+@app.route("/call_friends", methods=["GET", "POST"])
+def call_friends():
+    if request.method == "POST":
+        return redirect("/scene2")
+    return render_template("call_friends.html", health=session["health"])
+
+# ---------------- SCENE 2 ----------------
+@app.route("/scene2", methods=["GET", "POST"])
+def scene2():
+    if request.method == "POST":
+        choice = request.form.get('choice')
+        if choice == "one":
+            return redirect("/scene_dustin_place")
+        else:
+            return redirect("/notdustin")
+    return render_template("scene2.html", health=session["health"])
+
+@app.route("/notdustin", methods=["GET", "POST"])
+def notdustin():
+    if request.method == "POST":
+        return redirect("/scene_dustin_place")
+    return render_template("notdustin.html", health=session["health"])
+
+@app.route("/scene_dustin_place", methods=["GET", "POST"])
+def scene_dustin_place():
+    if request.method == "POST":
+        return redirect("/scene3")
+    return render_template("scene_dustin_place.html", health=session["health"])
+
+# ---------------- SCENE 3 ----------------
+@app.route("/scene3", methods=["GET", "POST"])
+def scene3():
+    session["allies"]["Friends"] = True
+    if request.method == "POST":
+        return redirect("/meetstrange")
+    return render_template("scene3.html", health=session["health"], allies=session["allies"])
+
+@app.route("/meetstrange", methods=["GET", "POST"])
+def meetstrange():
+    if request.method == "POST":
+        choice = request.form.get('choice')
+        if choice == "one":
+            session["allies"]["Eleven"] = True
+            return redirect("/eleven")
+        else:
+            return redirect("/no_risk")
+    return render_template("meetstrange.html", health=session["health"], allies=session["allies"])
+
+@app.route("/eleven", methods=["GET", "POST"])
+def eleven():
+    if request.method == "POST":
+        return redirect("/scene4")
+    return render_template("eleven.html", health=session["health"], allies=session["allies"])
+
+@app.route("/no_risk", methods=["GET", "POST"])
+def no_risk():
+    if request.method == "POST":
+        return redirect("/elcomes")
+    return render_template("no_risk.html", health=session["health"], allies=session["allies"])
+
+@app.route("/elcomes", methods=["GET", "POST"])
+def elcomes():
+    if request.method == "POST":
+        return redirect("/scene4")
+    return render_template("elcomes.html", health=session["health"], allies=session["allies"])
+
+# ---------------- SCENE 4 ----------------
+@app.route("/scene4", methods=["GET", "POST"])
+def scene4():
+    eleven_available = session["allies"].get("Eleven", False)
+
+    if request.method == "POST":
+        choice = request.form.get("choice")
+        if choice == "one" and eleven_available:
+            final_battle(with_eleven=True)
+        else:
+            final_battle(with_eleven=False)
+        return redirect("/ending")
+
+    return render_template(
+        "scene4.html",
+        health=session["health"],
+        allies=session["allies"],
+        bg_image=url_for("static", filename="images/cyclee.jpg")
+    )
+
+# ---------------- ENDING ----------------
+@app.route("/ending")
+def ending():
+    return render_template(
+        "ending.html",
+        health=session["health"],
+        allies=session["allies"],
+        ending=session.get("ending", "bad")  # fallback
+    )
+
+# ---------------- RUN ----------------
+if __name__ == "__main__":
+    app.run(debug=True)

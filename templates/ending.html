@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% set bg_image = url_for('static', filename='images/cyclee.jpg') %}
 
 {% block title %}
 Stranger Things
@@ -34,26 +35,5 @@ Stranger Things
 
 </div>
 
-<script>
-async function type(elementId, speed = 40) {
-    const element = document.getElementById(elementId);
-    if (!element) return;
-
-    const text = element.getAttribute('data-text');
-    for (let i = 0; i < text.length; i++) {
-        element.innerHTML += text.charAt(i);
-        await new Promise(resolve => setTimeout(resolve, speed));
-    }
-}
-
-async function run() {
-    await type('line1');
-    await type('line2');
-    await type('line3');
-    await type('line4');
-    await type('line5', 60);
-}
-
-document.addEventListener('DOMContentLoaded', run);
-</script>
+{# JS moved to layout.html #}
 {% endblock %}
